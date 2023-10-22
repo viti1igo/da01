@@ -47,7 +47,7 @@ SELECT
   user_id, 
   EXTRACT(MONTH FROM event_date) AS previous_month 
 FROM user_actions
-WHERE EXTRACT(MONTH FROM event_date) = '06'
+WHERE EXTRACT(MONTH FROM event_date) = '06'                                                 -------hehehehehehehehehehehehehehehehehehehe, em lịm đây-------|------SYD, 6:43AM
 AND EXTRACT(YEAR FROM event_date) = '2022')
 
 SELECT current_month AS month, COUNT(DISTINCT c1.user_id)
@@ -95,5 +95,37 @@ AND e1.salary < 30000
 --Q10: Same as Q1--
 
 --Q11--
+(SELECT name AS results
+FROM Users u
+JOIN MovieRating r ON u.user_id = r.user_id
+GROUP BY r.user_id, name
+ORDER BY COUNT(movie_id) DESC, name
+LIMIT 1)
 
+UNION ALL
+
+(SELECT title AS results
+FROM Movies m
+JOIN MovieRating r ON m.movie_id = r.movie_id
+WHERE EXTRACT(YEAR FROM r.created_at) = '2020'
+AND EXTRACT(MONTH FROM r.created_at) = '02'
+GROUP BY r.movie_id, title
+ORDER BY AVG(rating) DESC, title
+LIMIT 1)
 --Q12--
+WITH cte AS(
+    SELECT requester_id AS id, COUNT(accepter_id) AS friends_count
+    FROM RequestAccepted
+    GROUP BY requester_id
+      
+    UNION ALL
+      
+    SELECT accepter_id AS is, COUNT(requester_id) AS friends_count
+    FROM RequestAccepted
+    GROUP BY accepter_id
+)
+SELECT id, SUM(friends_count) AS num
+FROM cte
+GROUP BY id
+ORDER BY SUM(friends_count) DESC
+LIMIT 1
